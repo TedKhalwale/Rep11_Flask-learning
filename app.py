@@ -1,14 +1,68 @@
-# from flask import Flask, url_for, redirect #Import the class
+from flask import * #Import the class
 
-# app = Flask(__name__)   #Create the object of the class
+app = Flask(__name__)   #Create the object of the class
 
-# @app.route('/')  #Decorator defines the route
-# def hello():
-#     return "<h1>Hello, World!</h1>"
+@app.route('/')  #Decorator defines the route
+def hello():
+    return "<h1>Hello, World!</h1>"
 
-# @app.route('/sasa')
-# def salamu():   #The / acts like an index page
-#     return "Wazgood man" 
+# Setting cookies
+@app.route('/cookie')
+def cookie():   #The / acts like an index page
+    res = make_response('<h1>Cookie Is Set</h1>')
+    res.set_cookie('east africa', 'kenya')
+    return res
+
+@app.route('/cookie1')
+def cookie2():   #The / acts like an index page
+    res = make_response('<h1>The Second cookie Is Set</h1>')
+    res.set_cookie('Ford', 'Raptor')
+    return res
+
+# Reading cookies
+@app.route('/getcookie')
+def read_cookies():   #The / acts like an index page
+    Ford = request.cookies.get('Ford')
+    return f'The value of the ford cookie is: {Ford}'
+
+# Deleting cookies
+@app.route('/deletecookie')
+def delete_cookie():   #The / acts like an index page
+    res = make_response('<h1>The cookie is deleted</h1>')
+    res.set_cookie('Ford', '', expires=0)
+    return res
+
+
+
+# Multiple options
+@app.route('/setcookie')
+def set_cookie():
+    res = make_response('cookie')
+    res.set_cookie('sport', 'football', max_age=60*60*24, secure=True, httponly=True)
+
+
+####
+@app.route('/index')
+def index():   
+    theme = request.cookies.get('theme', 'light')
+    return render_template_string (
+        """
+        <html>
+        <body class="{{ theme }}">
+            <h1>Hello, World!</h1>
+            <a href="/settheme/dark'>Dark Theme</a>
+
+        """, theme=theme
+    )
+
+####
+@app.route('/settheme/<theme>')
+def set_theme(theme):   #The / acts like an index page
+    res = make_response(f'Theme set to {theme}')
+    res.set_cookie('theme', theme, max_age=60*60*365)
+    return res
+
+
 
 # @app.route('/sasa/jina')
 # def sasa():   #The / acts like an index page
@@ -41,7 +95,7 @@
 # #URL Building
 # #url for() -- dynamic building
 # @app.route('/director')
-# def director():
+# def director():k
 #     return '<h1>director</h1>'
 
 # @app.route('/instructor')
@@ -62,8 +116,8 @@
 #         return redirect(url_for('student'))
 
 
-# if __name__ == '__main__':
-#     app.run(debug=True)   #Specifies port number and host address
+if __name__ == '__main__':
+    app.run(debug=True)   #Specifies port number and host address
 
 
 
